@@ -1,18 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
+require("dotenv").config();
+const GreenSpace = require("./models/greenSpace");
+const connectDB = require("./db");
 
-mongoose.connect("mongodb://localhost:27017/green-spaces", {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useUnifiedTopology: true
-});
-
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", () => {
-  console.log("Database connected");
-});
+// Connect to database
+connectDB();
 
 const app = express();
 
@@ -21,6 +15,16 @@ app.set("views", path.join(__dirname, "views"));
 
 app.get("/", (req, res) => {
   res.render("home");
+});
+
+app.get("/makegreenspace", async (req, res) => {
+  const space = new GreenSpace({
+    title: "St Stephen's Green",
+    fee: "0",
+    description: "You know the one"
+  });
+  await space.save();
+  res.send(space);
 });
 
 app.listen(3000, () => {

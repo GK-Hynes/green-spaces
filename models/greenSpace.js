@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema();
+const Schema = mongoose.Schema;
 
 const GreenSpaceSchema = new Schema({
   title: String,
@@ -8,4 +8,4 @@ const GreenSpaceSchema = new Schema({
   location: String
 });
 
-module.exports = mongoose.Model("GreenSpace", GreenSpaceSchema);
+module.exports = mongoose.model("GreenSpace", GreenSpaceSchema);
