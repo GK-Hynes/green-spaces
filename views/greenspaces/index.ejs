@@ -8,9 +8,12 @@
 </head>
 <body>
   <h1>All Green Spaces</h1>
+  <div>
+    <a href="/greenspaces/new">Add Green Space</a>
+  </div>
   <ul>
-    <% for (let greenSpace of greenSpaces) { %>
-    <li><a href="/greenspaces/<%=greenSpace._id%>"><%= greenSpace.title %></a></li>
+    <% for (let greenspace of greenspaces) { %>
+    <li><a href="/greenspaces/<%=greenspace._id%>"><%= greenspace.title %></a></li>
     <% } %>
   </ul>
 </body>
