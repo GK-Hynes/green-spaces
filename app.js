@@ -17,14 +17,14 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-app.get("/makegreenspace", async (req, res) => {
-  const space = new GreenSpace({
-    title: "St Stephen's Green",
-    fee: "0",
-    description: "You know the one"
-  });
-  await space.save();
-  res.send(space);
+app.get("/greenspaces", async (req, res) => {
+  const greenSpaces = await GreenSpace.find({});
+  res.render("greenspaces/index", { greenSpaces });
+});
+
+app.get("/greenspaces/:id", async (req, res) => {
+  const greenSpace = await GreenSpace.findById(req.params.id);
+  res.render("greenspaces/show", { greenSpace });
 });
 
 app.listen(3000, () => {
