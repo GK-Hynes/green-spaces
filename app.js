@@ -1,21 +1,26 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const ejsMate = require("ejs-mate");
 const path = require("path");
+const morgan = require("morgan");
 const methodOverride = require("method-override");
 require("dotenv").config();
 const Greenspace = require("./models/greenspace");
 const connectDB = require("./db");
 
-// Connect to database
+// Connect to MongoDB Atlas
 connectDB();
 
 const app = express();
 
+app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+// Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+// app.use(morgan("tiny"));
 
 app.get("/", (req, res) => {
   res.render("home");

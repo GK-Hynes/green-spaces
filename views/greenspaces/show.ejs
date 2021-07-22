@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= greenspace.title%></title>
-</head>
-<body>
+<% layout("layouts/boilerplate") %>
   <h1><%= greenspace.title %></h1>
   <h2><%= greenspace.location %></h1>
   <p><a href="/greenspaces/<%=greenspace._id%>/edit">Edit</a></p>
@@ -18,5 +10,3 @@
   <footer>
     <a href="/greenspaces">All Green Spaces</a>
   </footer>
-</body>
-</html>
