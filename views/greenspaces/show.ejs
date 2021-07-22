@@ -1,12 +1,35 @@
 <% layout("layouts/boilerplate") %>
-  <h1><%= greenspace.title %></h1>
-  <h2><%= greenspace.location %></h1>
-  <p><a href="/greenspaces/<%=greenspace._id%>/edit">Edit</a></p>
-  <div>
-  <form action="/greenspaces/<%=greenspace._id%>?_method=DELETE" method="POST">
-    <button>Delete Green Space</button>
-  </form>
+<div class="row">
+  <div class="col-6 offset-3">
+    <div class="card mb-3">
+      <img
+        class="card-img-top"
+        src="<%= greenspace.image%>"
+        alt="<%= greenspace.title%>"
+      />
+      <div class="card-body">
+        <h3 class="card-title"><%= greenspace.title %></h3>
+        <p class="card-text"><%= greenspace.description %></p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item text-muted"><%= greenspace.location %></li>
+        <li class="list-group-item">Entrance Fee: €<%= greenspace.fee %></li>
+      </ul>
+      <div class="card-body">
+        <a
+          class="card-link btn btn-info"
+          href="/greenspaces/<%=greenspace._id%>/edit"
+          >Edit</a
+        >
+        <form
+          class="d-inline"
+          action="/greenspaces/<%=greenspace._id%>?_method=DELETE"
+          method="POST"
+        >
+          <button class="btn btn-danger">Delete Green Space</button>
+        </form>
+      </div>
+      <div class="card-footer">2 Days Ago</div>
+    </div>
   </div>
-  <footer>
-    <a href="/greenspaces">All Green Spaces</a>
-  </footer>
+</div>

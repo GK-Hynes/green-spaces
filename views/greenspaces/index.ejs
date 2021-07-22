@@ -1,10 +1,30 @@
 <% layout("layouts/boilerplate") %>
-  <h1>All Green Spaces</h1>
-  <div>
-    <a href="/greenspaces/new">Add Green Space</a>
+<h1>All Green Spaces</h1>
+<div>
+  <a href="/greenspaces/new">Add Green Space</a>
+</div>
+<% for (let greenspace of greenspaces) { %>
+<div class="card mb-3">
+  <div class="row">
+    <div class="col-md-4">
+      <img
+        class="img-fluid"
+        src="<%= greenspace.image%>"
+        alt="<%=greenspace.title%>"
+      />
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h3 class="card-title"><%= greenspace.title %></h3>
+        <p class="card-text"><%= greenspace.description%></p>
+        <p class="card-text">
+          <small class="text-muted"> <%= greenspace.location%> </small>
+        </p>
+        <a class="btn btn-primary" href="/greenspaces/<%= greenspace._id%>"
+          >View <%= greenspace.title%></a
+        >
+      </div>
+    </div>
   </div>
-  <ul>
-    <% for (let greenspace of greenspaces) { %>
-    <li><a href="/greenspaces/<%=greenspace._id%>"><%= greenspace.title %></a></li>
-    <% } %>
-  </ul>
+</div>
+<% } %>
