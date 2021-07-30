@@ -5,6 +5,7 @@ const ejsMate = require("ejs-mate");
 const path = require("path");
 const methodOverride = require("method-override");
 const Greenspace = require("./models/greenspace");
+const { greenspaceSchema } = require("./schemas");
 const ExpressError = require("./utils/ExpressError");
 const catchAsync = require("./utils/catchAsync");
 
@@ -33,6 +34,16 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
+const validateGreenspace = (req, res, next) => {
+  const { error } = greenspaceSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
+};
+
 app.get("/", (req, res) => {
   res.render("home");
 });
@@ -51,10 +62,8 @@ app.get("/greenspaces/new", (req, res) => {
 
 app.post(
   "/greenspaces",
+  validateGreenspace,
   catchAsync(async (req, res, next) => {
-    if (!req.body.greenspace) {
-      throw new ExpressError("Invalid Green Space data", 400);
-    }
     const greenspace = new Greenspace(req.body.greenspace);
     await greenspace.save();
     res.redirect(`/greenspaces/${greenspace._id}`);
@@ -79,6 +88,7 @@ app.get(
 
 app.put(
   "/greenspaces/:id",
+  validateGreenspace,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const greenspace = await Greenspace.findByIdAndUpdate(id, {
