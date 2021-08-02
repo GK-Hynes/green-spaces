@@ -6,7 +6,13 @@ const GreenspaceSchema = new Schema({
   image: String,
   fee: Number,
   description: String,
-  location: String
+  location: String,
+  reviews: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Review"
+    }
+  ]
 });
 
 module.exports = mongoose.model("Greenspace", GreenspaceSchema);

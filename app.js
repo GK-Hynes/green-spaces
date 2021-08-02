@@ -5,6 +5,7 @@ const ejsMate = require("ejs-mate");
 const path = require("path");
 const methodOverride = require("method-override");
 const Greenspace = require("./models/greenspace");
+const Review = require("./models/review");
 const { greenspaceSchema } = require("./schemas");
 const ExpressError = require("./utils/ExpressError");
 const catchAsync = require("./utils/catchAsync");
@@ -44,6 +45,7 @@ const validateGreenspace = (req, res, next) => {
   }
 };
 
+// Green Space Routes
 app.get("/", (req, res) => {
   res.render("home");
 });
@@ -104,6 +106,19 @@ app.delete(
     const { id } = req.params;
     await Greenspace.findByIdAndDelete(id);
     res.redirect("/greenspaces");
+  })
+);
+
+// Review Routes
+app.post(
+  "/greenspaces/:id/reviews",
+  catchAsync(async (req, res) => {
+    const greenspace = await Greenspace.findById(req.params.id);
+    const review = new Review(req.body.review);
+    greenspace.reviews.push(review);
+    await review.save();
+    await greenspace.save();
+    res.redirect(`/greenspaces/${greenspace._id}`);
   })
 );
 
