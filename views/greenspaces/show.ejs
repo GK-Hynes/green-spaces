@@ -1,6 +1,6 @@
 <% layout("layouts/boilerplate") %>
 <div class="row">
-  <div class="col-6 offset-3">
+  <div class="col-6">
     <div class="card mb-3">
       <img
         class="card-img-top"
@@ -31,10 +31,13 @@
       </div>
       <div class="card-footer">2 days ago</div>
     </div>
+  </div>
+  <div class="col-6">
     <form
       action="/greenspaces/<%=greenspace._id%>/reviews"
       method="POST"
-      class="mb-3"
+      class="mb-3 validated-form"
+      novalidate
     >
       <h2>Leave a Review</h2>
       <div class="mb-3">
@@ -56,9 +59,19 @@
           id="body"
           cols="30"
           rows="3"
+          required
         ></textarea>
+        <div class="valid-feedback">Looks good!</div>
       </div>
       <button class="btn btn-success">Add Review</button>
     </form>
+    <% for (let review of greenspace.reviews) { %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h4 class="card-title">Rating: <%= review.rating %></h4>
+        <p class="card-text">Review: <%= review.body %></p>
+      </div>
+    </div>
+    <% } %>
   </div>
 </div>

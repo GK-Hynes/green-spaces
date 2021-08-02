@@ -6,7 +6,7 @@ const path = require("path");
 const methodOverride = require("method-override");
 const Greenspace = require("./models/greenspace");
 const Review = require("./models/review");
-const { greenspaceSchema } = require("./schemas");
+const { greenspaceSchema, reviewSchema } = require("./schemas");
 const ExpressError = require("./utils/ExpressError");
 const catchAsync = require("./utils/catchAsync");
 
@@ -45,6 +45,16 @@ const validateGreenspace = (req, res, next) => {
   }
 };
 
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
+};
+
 // Green Space Routes
 app.get("/", (req, res) => {
   res.render("home");
@@ -75,7 +85,9 @@ app.post(
 app.get(
   "/greenspaces/:id",
   catchAsync(async (req, res) => {
-    const greenspace = await Greenspace.findById(req.params.id);
+    const greenspace = await Greenspace.findById(req.params.id).populate(
+      "reviews"
+    );
     res.render("greenspaces/show", { greenspace });
   })
 );
@@ -112,6 +124,7 @@ app.delete(
 // Review Routes
 app.post(
   "/greenspaces/:id/reviews",
+  validateReview,
   catchAsync(async (req, res) => {
     const greenspace = await Greenspace.findById(req.params.id);
     const review = new Review(req.body.review);
