@@ -4,11 +4,9 @@ const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const path = require("path");
 const methodOverride = require("method-override");
-const Greenspace = require("./models/greenspace");
-const Review = require("./models/review");
-const { greenspaceSchema, reviewSchema } = require("./schemas");
 const ExpressError = require("./utils/ExpressError");
-const catchAsync = require("./utils/catchAsync");
+const greenspaces = require("./routes/greenspaces");
+const reviews = require("./routes/reviews");
 
 // Connect to database
 mongoose
@@ -35,117 +33,12 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
-const validateGreenspace = (req, res, next) => {
-  const { error } = greenspaceSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
+app.use("/greenspaces", greenspaces);
+app.use("/greenspaces/:id/reviews", reviews);
 
-const validateReview = (req, res, next) => {
-  const { error } = reviewSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
-
-// Green Space Routes
 app.get("/", (req, res) => {
   res.render("home");
 });
-
-app.get(
-  "/greenspaces",
-  catchAsync(async (req, res) => {
-    const greenspaces = await Greenspace.find({});
-    res.render("greenspaces/index", { greenspaces });
-  })
-);
-
-app.get("/greenspaces/new", (req, res) => {
-  res.render("greenspaces/new");
-});
-
-app.post(
-  "/greenspaces",
-  validateGreenspace,
-  catchAsync(async (req, res, next) => {
-    const greenspace = new Greenspace(req.body.greenspace);
-    await greenspace.save();
-    res.redirect(`/greenspaces/${greenspace._id}`);
-  })
-);
-
-app.get(
-  "/greenspaces/:id",
-  catchAsync(async (req, res) => {
-    const greenspace = await Greenspace.findById(req.params.id).populate(
-      "reviews"
-    );
-    res.render("greenspaces/show", { greenspace });
-  })
-);
-
-app.get(
-  "/greenspaces/:id/edit",
-  catchAsync(async (req, res) => {
-    const greenspace = await Greenspace.findById(req.params.id);
-    res.render("greenspaces/edit", { greenspace });
-  })
-);
-
-app.put(
-  "/greenspaces/:id",
-  validateGreenspace,
-  catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const greenspace = await Greenspace.findByIdAndUpdate(id, {
-      ...req.body.greenspace
-    });
-    res.redirect(`/greenspaces/${greenspace._id}`);
-  })
-);
-
-app.delete(
-  "/greenspaces/:id",
-  catchAsync(async (req, res) => {
-    const { id } = req.params;
-    await Greenspace.findByIdAndDelete(id);
-    res.redirect("/greenspaces");
-  })
-);
-
-// Review Routes
-app.post(
-  "/greenspaces/:id/reviews",
-  validateReview,
-  catchAsync(async (req, res) => {
-    const greenspace = await Greenspace.findById(req.params.id);
-    const review = new Review(req.body.review);
-    greenspace.reviews.push(review);
-    await review.save();
-    await greenspace.save();
-    res.redirect(`/greenspaces/${greenspace._id}`);
-  })
-);
-
-app.delete(
-  "/greenspaces/:id/reviews/:reviewId",
-  catchAsync(async (req, res) => {
-    const { id, reviewId } = req.params;
-    await Greenspace.findByIdAndUpdate(id, {
-      $pull: { reviews: reviewId }
-    });
-    await Review.findByIdAndDelete(reviewId);
-    res.redirect(`/greenspaces/${id}`);
-  })
-);
 
 app.all("*", (req, res, next) => {
   next(new ExpressError("Page not found", 404));
