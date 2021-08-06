@@ -7,6 +7,7 @@ const methodOverride = require("method-override");
 const ExpressError = require("./utils/ExpressError");
 const greenspaces = require("./routes/greenspaces");
 const reviews = require("./routes/reviews");
+const session = require("express-session");
 
 // Connect to database
 mongoose
@@ -32,6 +33,18 @@ app.set("views", path.join(__dirname, "views"));
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+app.use(express.static(path.join(__dirname, "public")));
+const sessionConfig = {
+  secret: "thisshouldbeabettersecret",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    expires: Date.now() + 604800000, // 7 days
+    maxAge: 604800000
+  }
+};
+app.use(session(sessionConfig));
 
 app.use("/greenspaces", greenspaces);
 app.use("/greenspaces/:id/reviews", reviews);
