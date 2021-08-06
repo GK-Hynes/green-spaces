@@ -8,6 +8,7 @@ const ExpressError = require("./utils/ExpressError");
 const greenspaces = require("./routes/greenspaces");
 const reviews = require("./routes/reviews");
 const session = require("express-session");
+const flash = require("connect-flash");
 
 // Connect to database
 mongoose
@@ -45,6 +46,13 @@ const sessionConfig = {
   }
 };
 app.use(session(sessionConfig));
+app.use(flash());
+
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
 
 app.use("/greenspaces", greenspaces);
 app.use("/greenspaces/:id/reviews", reviews);

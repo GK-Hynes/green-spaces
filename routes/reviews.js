@@ -26,6 +26,7 @@ router.post(
     greenspace.reviews.push(review);
     await review.save();
     await greenspace.save();
+    req.flash("success", "Created new review");
     res.redirect(`/greenspaces/${greenspace._id}`);
   })
 );
@@ -38,6 +39,7 @@ router.delete(
       $pull: { reviews: reviewId }
     });
     await Review.findByIdAndDelete(reviewId);
+    req.flash("success", "Successfully deleted review");
     res.redirect(`/greenspaces/${id}`);
   })
 );

@@ -34,6 +34,7 @@ router.post(
   catchAsync(async (req, res, next) => {
     const greenspace = new Greenspace(req.body.greenspace);
     await greenspace.save();
+    req.flash("success", "Successfully made a new Green Space");
     res.redirect(`/greenspaces/${greenspace._id}`);
   })
 );
@@ -64,6 +65,7 @@ router.put(
     const greenspace = await Greenspace.findByIdAndUpdate(id, {
       ...req.body.greenspace
     });
+    req.flash("success", "Successfully updated Green Space");
     res.redirect(`/greenspaces/${greenspace._id}`);
   })
 );
@@ -73,6 +75,7 @@ router.delete(
   catchAsync(async (req, res) => {
     const { id } = req.params;
     await Greenspace.findByIdAndDelete(id);
+    req.flash("success", "Successfully deleted Green Space");
     res.redirect("/greenspaces");
   })
 );
