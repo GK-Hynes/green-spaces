@@ -45,6 +45,10 @@ router.get(
     const greenspace = await Greenspace.findById(req.params.id).populate(
       "reviews"
     );
+    if (!greenspace) {
+      req.flash("error", "Cannot find that Green Space");
+      return res.redirect("/greenspaces");
+    }
     res.render("greenspaces/show", { greenspace });
   })
 );
@@ -53,6 +57,10 @@ router.get(
   "/:id/edit",
   catchAsync(async (req, res) => {
     const greenspace = await Greenspace.findById(req.params.id);
+    if (!greenspace) {
+      req.flash("error", "Cannot find that Green Space");
+      return res.redirect("/greenspaces");
+    }
     res.render("greenspaces/edit", { greenspace });
   })
 );
