@@ -9,6 +9,9 @@ const greenspaces = require("./routes/greenspaces");
 const reviews = require("./routes/reviews");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user");
 
 // Connect to database
 mongoose
@@ -27,6 +30,7 @@ mongoose
 
 const app = express();
 
+// ejs
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -35,6 +39,8 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
+
+// Session
 const sessionConfig = {
   secret: "thisshouldbeabettersecret",
   resave: false,
@@ -42,16 +48,29 @@ const sessionConfig = {
   cookie: {
     httpOnly: true,
     expires: Date.now() + 604800000, // 7 days
-    maxAge: 604800000
+    maxAge: 604800000 // 7 days
   }
 };
 app.use(session(sessionConfig));
 app.use(flash());
 
+// Passport Config
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   next();
+});
+
+app.get("/fakeUser", async (req, res) => {
+  const user = new User({ email: "colt@gmail.com", username: "Colt" });
+  const newUser = await User.register(user, "chicken");
+  res.send(newUser);
 });
 
 app.use("/greenspaces", greenspaces);
