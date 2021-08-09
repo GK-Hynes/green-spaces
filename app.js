@@ -5,8 +5,9 @@ const ejsMate = require("ejs-mate");
 const path = require("path");
 const methodOverride = require("method-override");
 const ExpressError = require("./utils/ExpressError");
-const greenspaces = require("./routes/greenspaces");
-const reviews = require("./routes/reviews");
+const greenspaceRoutes = require("./routes/greenspaces");
+const reviewRoutes = require("./routes/reviews");
+const userRoutes = require("./routes/users");
 const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
@@ -67,14 +68,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/fakeUser", async (req, res) => {
-  const user = new User({ email: "colt@gmail.com", username: "Colt" });
-  const newUser = await User.register(user, "chicken");
-  res.send(newUser);
-});
-
-app.use("/greenspaces", greenspaces);
-app.use("/greenspaces/:id/reviews", reviews);
+app.use("/", userRoutes);
+app.use("/greenspaces", greenspaceRoutes);
+app.use("/greenspaces/:id/reviews", reviewRoutes);
 
 app.get("/", (req, res) => {
   res.render("home");
