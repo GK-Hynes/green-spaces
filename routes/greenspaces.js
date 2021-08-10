@@ -3,6 +3,7 @@ const Greenspace = require("../models/greenspace");
 const catchAsync = require("../utils/catchAsync");
 const ExpressError = require("../utils/ExpressError");
 const { greenspaceSchema } = require("../schemas");
+const { isLoggedIn } = reuire("../middleware");
 
 const router = express.Router();
 
@@ -24,12 +25,13 @@ router.get(
   })
 );
 
-router.get("/new", (req, res) => {
+router.get("/new", isLoggedIn, (req, res) => {
   res.render("greenspaces/new");
 });
 
 router.post(
   "/",
+  isLoggedIn,
   validateGreenspace,
   catchAsync(async (req, res, next) => {
     const greenspace = new Greenspace(req.body.greenspace);
@@ -55,6 +57,7 @@ router.get(
 
 router.get(
   "/:id/edit",
+  isLoggedIn,
   catchAsync(async (req, res) => {
     const greenspace = await Greenspace.findById(req.params.id);
     if (!greenspace) {
@@ -67,6 +70,7 @@ router.get(
 
 router.put(
   "/:id",
+  isLoggedIn,
   validateGreenspace,
   catchAsync(async (req, res) => {
     const { id } = req.params;
@@ -80,6 +84,7 @@ router.put(
 
 router.delete(
   "/:id",
+  isLoggedIn,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     await Greenspace.findByIdAndDelete(id);
