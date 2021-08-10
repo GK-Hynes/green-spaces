@@ -3,7 +3,7 @@ const Greenspace = require("../models/greenspace");
 const catchAsync = require("../utils/catchAsync");
 const ExpressError = require("../utils/ExpressError");
 const { greenspaceSchema } = require("../schemas");
-const { isLoggedIn } = reuire("../middleware");
+const { isLoggedIn } = require("../middleware");
 
 const router = express.Router();
 
