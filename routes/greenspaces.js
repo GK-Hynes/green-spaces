@@ -5,39 +5,33 @@ const greenspaces = require("../controllers/greenspaces");
 
 const router = express.Router();
 
-router.get("/", catchAsync(greenspaces.index));
+router
+  .route("/")
+  .get(catchAsync(greenspaces.index))
+  .post(
+    isLoggedIn,
+    validateGreenspace,
+    catchAsync(greenspaces.createGreenspace)
+  );
 
 router.get("/new", isLoggedIn, greenspaces.renderNewForm);
 
-router.post(
-  "/",
-  isLoggedIn,
-  validateGreenspace,
-  catchAsync(greenspaces.createGreenspace)
-);
-
-router.get("/:id", catchAsync(greenspaces.showGreenspace));
+router
+  .route("/:id")
+  .get(catchAsync(greenspaces.showGreenspace))
+  .put(
+    isLoggedIn,
+    isAuthor,
+    validateGreenspace,
+    catchAsync(greenspaces.updateGreenspace)
+  )
+  .delete(isLoggedIn, isAuthor, catchAsync(greenspaces.deleteGreenspace));
 
 router.get(
   "/:id/edit",
   isLoggedIn,
   isAuthor,
   catchAsync(greenspaces.renderEditForm)
-);
-
-router.put(
-  "/:id",
-  isLoggedIn,
-  isAuthor,
-  validateGreenspace,
-  catchAsync(greenspaces.updateGreenspace)
-);
-
-router.delete(
-  "/:id",
-  isLoggedIn,
-  isAuthor,
-  catchAsync(greenspaces.deleteGreenspace)
 );
 
 module.exports = router;
