@@ -1,21 +1,9 @@
 const express = require("express");
 const Greenspace = require("../models/greenspace");
 const catchAsync = require("../utils/catchAsync");
-const ExpressError = require("../utils/ExpressError");
-const { greenspaceSchema } = require("../schemas");
-const { isLoggedIn } = require("../middleware");
+const { isLoggedIn, isAuthor, validateGreenspace } = require("../middleware");
 
 const router = express.Router();
-
-const validateGreenspace = (req, res, next) => {
-  const { error } = greenspaceSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
 
 router.get(
   "/",
@@ -46,7 +34,12 @@ router.get(
   "/:id",
   catchAsync(async (req, res) => {
     const greenspace = await Greenspace.findById(req.params.id)
-      .populate("reviews")
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "author"
+        }
+      })
       .populate("author");
     if (!greenspace) {
       req.flash("error", "Cannot find that Green Space");
@@ -59,8 +52,10 @@ router.get(
 router.get(
   "/:id/edit",
   isLoggedIn,
+  isAuthor,
   catchAsync(async (req, res) => {
-    const greenspace = await Greenspace.findById(req.params.id);
+    const { id } = req.params;
+    const greenspace = await Greenspace.findById(id);
     if (!greenspace) {
       req.flash("error", "Cannot find that Green Space");
       return res.redirect("/greenspaces");
@@ -72,6 +67,7 @@ router.get(
 router.put(
   "/:id",
   isLoggedIn,
+  isAuthor,
   validateGreenspace,
   catchAsync(async (req, res) => {
     const { id } = req.params;
@@ -86,6 +82,7 @@ router.put(
 router.delete(
   "/:id",
   isLoggedIn,
+  isAuthor,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     await Greenspace.findByIdAndDelete(id);
