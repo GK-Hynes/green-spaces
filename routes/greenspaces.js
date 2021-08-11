@@ -35,6 +35,7 @@ router.post(
   validateGreenspace,
   catchAsync(async (req, res, next) => {
     const greenspace = new Greenspace(req.body.greenspace);
+    greenspace.author = req.user._id;
     await greenspace.save();
     req.flash("success", "Successfully made a new Green Space");
     res.redirect(`/greenspaces/${greenspace._id}`);
@@ -44,9 +45,9 @@ router.post(
 router.get(
   "/:id",
   catchAsync(async (req, res) => {
-    const greenspace = await Greenspace.findById(req.params.id).populate(
-      "reviews"
-    );
+    const greenspace = await Greenspace.findById(req.params.id)
+      .populate("reviews")
+      .populate("author");
     if (!greenspace) {
       req.flash("error", "Cannot find that Green Space");
       return res.redirect("/greenspaces");

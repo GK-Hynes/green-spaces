@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 require("dotenv").config({ path: "../.env" });
-const connectDB = require("../db");
 const Greenspace = require("../models/greenspace");
 const cities = require("./cities");
 const { places, descriptors } = require("./seedHelpers");
@@ -27,6 +26,7 @@ const seedDB = async () => {
   for (let i = 0; i < 20; i++) {
     const random1000 = Math.floor(Math.random() * 1000);
     const greenspace = new Greenspace({
+      author: "611396aa19e6c10c73234784",
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
       title: `${sample(descriptors)} ${sample(places)}`,
       image: "https://source.unsplash.com/collection/8656992",

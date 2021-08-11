@@ -12,9 +12,13 @@
         <p class="card-text"><%= greenspace.description %></p>
       </div>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item text-muted"><%= greenspace.location %></li>
+        <li class="list-group-item"><%= greenspace.location %></li>
+        <li class="list-group-item">
+          Submitted by <%= greenspace.author.username %>
+        </li>
         <li class="list-group-item">Entrance Fee: €<%= greenspace.fee %></li>
       </ul>
+      <% if(currentUser && greenspace.author.equals(currentUser._id)) {%>
       <div class="card-body">
         <a
           class="card-link btn btn-info"
@@ -26,9 +30,10 @@
           action="/greenspaces/<%=greenspace._id%>?_method=DELETE"
           method="POST"
         >
-          <button class="btn btn-danger">Delete Green Space</button>
+          <button class="btn btn-danger">Delete</button>
         </form>
       </div>
+      <% } %>
       <div class="card-footer">2 days ago</div>
     </div>
   </div>
