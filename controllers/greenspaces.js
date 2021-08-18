@@ -52,6 +52,12 @@ module.exports.updateGreenspace = async (req, res) => {
   const greenspace = await Greenspace.findByIdAndUpdate(id, {
     ...req.body.greenspace
   });
+  const images = req.files.map((f) => ({
+    url: f.path,
+    filename: f.filename
+  }));
+  greenspace.images.push(...images);
+  await greenspace.save();
   req.flash("success", "Successfully updated Green Space");
   res.redirect(`/greenspaces/${greenspace._id}`);
 };
