@@ -11,6 +11,10 @@ module.exports.renderNewForm = (req, res) => {
 
 module.exports.createGreenspace = async (req, res, next) => {
   const greenspace = new Greenspace(req.body.greenspace);
+  greenspace.images = req.files.map((f) => ({
+    url: f.path,
+    filename: f.filename
+  }));
   greenspace.author = req.user._id;
   await greenspace.save();
   req.flash("success", "Successfully made a new Green Space");

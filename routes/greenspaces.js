@@ -1,8 +1,10 @@
 const express = require("express");
+const multer = require("multer");
 const catchAsync = require("../utils/catchAsync");
 const { isLoggedIn, isAuthor, validateGreenspace } = require("../middleware");
 const greenspaces = require("../controllers/greenspaces");
-
+const { storage } = require("../cloudinary");
+const upload = multer({ storage });
 const router = express.Router();
 
 router
@@ -10,6 +12,7 @@ router
   .get(catchAsync(greenspaces.index))
   .post(
     isLoggedIn,
+    upload.array("image"),
     validateGreenspace,
     catchAsync(greenspaces.createGreenspace)
   );

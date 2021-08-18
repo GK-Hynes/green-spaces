@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const GreenspaceSchema = new Schema({
   title: String,
-  image: String,
+  images: [{ url: String, filename: String }],
   fee: Number,
   description: String,
   location: String,

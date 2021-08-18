@@ -3,11 +3,13 @@
 <div class="row">
   <div class="col-6">
     <div class="card mb-3">
+      <% for (let image of greenspace.images) { %>
       <img
         class="card-img-top"
-        src="<%= greenspace.image%>"
+        src="<%= image.url%>"
         alt="<%= greenspace.title%>"
       />
+      <% } %>
       <div class="card-body">
         <h3 class="card-title"><%= greenspace.title %></h3>
         <p class="card-text"><%= greenspace.description %></p>
