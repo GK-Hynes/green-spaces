@@ -1,5 +1,9 @@
 const Greenspace = require("../models/greenspace");
 const { cloudinary } = require("../cloudinary");
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 
 module.exports.index = async (req, res) => {
   const greenspaces = await Greenspace.find({});
@@ -11,7 +15,11 @@ module.exports.renderNewForm = (req, res) => {
 };
 
 module.exports.createGreenspace = async (req, res, next) => {
+  const geoData = await geocoder
+    .forwardGeocode({ query: req.body.greenspace.location, limit: 1 })
+    .send();
   const greenspace = new Greenspace(req.body.greenspace);
+  greenspace.geometry = geoData.body.features[0].geometry;
   greenspace.images = req.files.map((f) => ({
     url: f.path,
     filename: f.filename
