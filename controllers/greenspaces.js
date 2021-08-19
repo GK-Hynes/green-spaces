@@ -1,4 +1,5 @@
 const Greenspace = require("../models/greenspace");
+const { cloudinary } = require("../cloudinary");
 
 module.exports.index = async (req, res) => {
   const greenspaces = await Greenspace.find({});
@@ -58,6 +59,17 @@ module.exports.updateGreenspace = async (req, res) => {
   }));
   greenspace.images.push(...images);
   await greenspace.save();
+
+  // Delete images from Cloudinary and MongoDB
+  if (req.body.deleteImages) {
+    for (let filename of req.body.deleteImages) {
+      await cloudinary.uploader.destroy(filename);
+    }
+    await greenspace.updateOne({
+      $pull: { images: { filename: { $in: req.body.deleteImages } } }
+    });
+  }
+
   req.flash("success", "Successfully updated Green Space");
   res.redirect(`/greenspaces/${greenspace._id}`);
 };
