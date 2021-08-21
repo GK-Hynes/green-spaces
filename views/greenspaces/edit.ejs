@@ -1,97 +1,101 @@
 <% layout("layouts/boilerplate") %>
 <div class="row">
-  <h1 class="text-center">Edit Green Space</h1>
-  <div class="col-6 offset-3">
-    <form
-      action="/greenspaces/<%= greenspace._id%>?_method=PUT"
-      method="POST"
-      class="validated-form"
-      novalidate
-      enctype="multipart/form-data"
-    >
-      <div class="mb-3">
-        <label class="form-label" for="title">Title</label>
-        <input
-          class="form-control"
-          type="text"
-          id="title"
-          name="greenspace[title]"
-          value="<%=greenspace.title%>"
-          required
-        />
-        <div class="valid-feedback">Looks good</div>
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="location">Location</label>
-        <input
-          class="form-control"
-          type="text"
-          id="location"
-          name="greenspace[location]"
-          value="<%=greenspace.location%>"
-          required
-        />
-        <div class="valid-feedback">Looks good</div>
-      </div>
-      <div class="mb-3">
-        <label for="image" class="form-label">Add Image(s)</label>
-        <input
-          class="form-control"
-          type="file"
-          name="image"
-          id="image"
-          multiple
-        />
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="fee">Entrance Fee</label>
-        <div class="input-group">
-          <span class="input-group-text" id="fee-label">€</span>
-          <input
-            name="greenspace[fee]"
-            type="text"
-            class="form-control"
-            id="fee"
-            placeholder="0.00"
-            aria-label="fee"
-            aria-describedby="fee-label"
-            value="<%=greenspace.fee%>"
-            required
-          />
-          <div class="valid-feedback">Looks good</div>
-        </div>
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="description">Description</label>
-        <textarea
-          name="greenspace[description]"
-          id="description"
-          class="form-control"
-          required
+  <div class="col-md-6 offset-md-3">
+    <div class="card shadow mb-3">
+      <div class="card-body">
+        <h3 class="card-title text-center">Edit Green Space</h3>
+        <form
+          action="/greenspaces/<%= greenspace._id%>?_method=PUT"
+          method="POST"
+          class="validated-form"
+          novalidate
+          enctype="multipart/form-data"
         >
+          <div class="mb-3">
+            <label class="form-label" for="title">Title</label>
+            <input
+              class="form-control"
+              type="text"
+              id="title"
+              name="greenspace[title]"
+              value="<%=greenspace.title%>"
+              required
+            />
+            <div class="valid-feedback">Looks good</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="location">Location</label>
+            <input
+              class="form-control"
+              type="text"
+              id="location"
+              name="greenspace[location]"
+              value="<%=greenspace.location%>"
+              required
+            />
+            <div class="valid-feedback">Looks good</div>
+          </div>
+          <div class="mb-3">
+            <label for="image" class="form-label">Add Image(s)</label>
+            <input
+              class="form-control"
+              type="file"
+              name="image"
+              id="image"
+              multiple
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="fee">Entrance Fee</label>
+            <div class="input-group">
+              <span class="input-group-text" id="fee-label">€</span>
+              <input
+                name="greenspace[fee]"
+                type="text"
+                class="form-control"
+                id="fee"
+                placeholder="0.00"
+                aria-label="fee"
+                aria-describedby="fee-label"
+                value="<%=greenspace.fee%>"
+                required
+              />
+              <div class="valid-feedback">Looks good</div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="description">Description</label>
+            <textarea
+              name="greenspace[description]"
+              id="description"
+              class="form-control"
+              required
+            >
       <%=greenspace.description%>
       </textarea
-        >
-        <div class="valid-feedback">Looks good</div>
+            >
+            <div class="valid-feedback">Looks good</div>
+          </div>
+          <div class="mb-3">
+            <% greenspace.images.forEach((img, i) =>{ %>
+            <img class="img-thumbnail" src="<%=img.thumbnail%>" alt="" />
+            <div class="form-check-inline">
+              <input
+                type="checkbox"
+                name="deleteImages[]"
+                id="image-<%=i%>"
+                value="<%=img.filename%>"
+              />
+            </div>
+            <label for="image-<%=i%>">Delete Image?</label>
+            <% }) %>
+          </div>
+          <div class="mb-3">
+            <button class="btn btn-info">Update Green Space</button>
+          </div>
+        </form>
+        <a href="/greenspaces/<%=greenspace._id%>">Back to Green Space</a>
       </div>
-      <div class="mb-3">
-        <% greenspace.images.forEach((img, i) =>{ %>
-        <img class="img-thumbnail" src="<%=img.thumbnail%>" alt="" />
-        <div class="form-check-inline">
-          <input
-            type="checkbox"
-            name="deleteImages[]"
-            id="image-<%=i%>"
-            value="<%=img.filename%>"
-          />
-        </div>
-        <label for="image-<%=i%>">Delete Image?</label>
-        <% }) %>
-      </div>
-      <div class="mb-3">
-        <button class="btn btn-info">Update Green Space</button>
-      </div>
-    </form>
-    <a href="/greenspaces/<%=greenspace._id%>">Back to Green Space</a>
+    </div>
   </div>
 </div>
