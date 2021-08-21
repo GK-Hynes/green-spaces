@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="/styles/stars.css" />
 
 <div class="row">
-  <div class="col-6">
+  <div class="col-md-6">
     <div id="greenspaceCarousel" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
         <% greenspace.images.forEach((img, i) => { %>
@@ -63,8 +63,8 @@
       <div class="card-footer">2 days ago</div>
     </div>
   </div>
-  <div class="col-6">
-    <div id="map" style="width: 400px; height: 300px"></div>
+  <div class="col-md-6">
+    <div id="map" class="show-map"></div>
     <% if(currentUser) {%>
     <form
       action="/greenspaces/<%=greenspace._id%>/reviews"
