@@ -7,23 +7,20 @@ const ejsMate = require("ejs-mate");
 const path = require("path");
 const methodOverride = require("method-override");
 const mongoSanitize = require("express-mongo-sanitize");
-const ExpressError = require("./utils/ExpressError");
-const greenspaceRoutes = require("./routes/greenspaces");
-const reviewRoutes = require("./routes/reviews");
-const userRoutes = require("./routes/users");
 const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const helmet = require("helmet");
-const User = require("./models/user");
 const MongoDBStore = require("connect-mongo");
-
-// Production db url
-// const dbUrl = process.env.MONGO_ATLAS_URL;
-const dbUrl = process.env.DB_URL;
+const greenspaceRoutes = require("./routes/greenspaces");
+const reviewRoutes = require("./routes/reviews");
+const userRoutes = require("./routes/users");
+const User = require("./models/user");
+const ExpressError = require("./utils/ExpressError");
 
 // Connect to database
+const dbUrl = process.env.DB_URL;
 mongoose
   .connect(dbUrl, {
     useNewUrlParser: true,
@@ -97,13 +94,15 @@ app.use(
   })
 );
 
+const secret = process.env.SECRET || "thisshouldbeabettersecret";
+
 // Session
 const store = MongoDBStore.create({
   mongoUrl: dbUrl,
   // Update store once every 24 hours
   touchAfter: 24 * 3600,
   crypto: {
-    secret: "thisshouldbeabettersecret"
+    secret
   }
 });
 
@@ -114,7 +113,7 @@ store.on("error", function (err) {
 const sessionConfig = {
   store,
   name: "seisiun",
-  secret: "thisshouldbeabettersecret",
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
