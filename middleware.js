@@ -1,7 +1,7 @@
+const { greenspaceSchema, reviewSchema } = require("./schemas");
 const Greenspace = require("./models/greenspace");
 const Review = require("./models/review");
-const { greenspaceSchema, reviewSchema } = require("./schemas");
-const ExpressError = require("./utils/ExpressError");
+const ExpressError = require("./utils/expressError");
 
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {

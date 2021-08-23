@@ -17,7 +17,7 @@ const greenspaceRoutes = require("./routes/greenspaces");
 const reviewRoutes = require("./routes/reviews");
 const userRoutes = require("./routes/users");
 const User = require("./models/user");
-const ExpressError = require("./utils/ExpressError");
+const ExpressError = require("./utils/expressError");
 
 // Connect to database
 const dbUrl = process.env.DB_URL;
