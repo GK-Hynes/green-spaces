@@ -17,10 +17,15 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const helmet = require("helmet");
 const User = require("./models/user");
+const MongoDBStore = require("connect-mongo");
+
+// Production db url
+// const dbUrl = process.env.MONGO_ATLAS_URL;
+const dbUrl = process.env.DB_URL;
 
 // Connect to database
 mongoose
-  .connect(process.env.DB_URL, {
+  .connect(dbUrl, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
@@ -61,7 +66,8 @@ const styleSrcUrls = [
   "https://api.mapbox.com",
   "https://api.tiles.mapbox.com",
   "https://fonts.googleapis.com",
-  "https://use.fontawesome.com"
+  "https://use.fontawesome.com",
+  "https://cdn.jsdelivr.net"
 ];
 const connectSrcUrls = [
   "https://api.mapbox.com",
@@ -92,7 +98,21 @@ app.use(
 );
 
 // Session
+const store = MongoDBStore.create({
+  mongoUrl: dbUrl,
+  // Update store once every 24 hours
+  touchAfter: 24 * 3600,
+  crypto: {
+    secret: "thisshouldbeabettersecret"
+  }
+});
+
+store.on("error", function (err) {
+  console.log("Session Store Error:", err);
+});
+
 const sessionConfig = {
+  store,
   name: "seisiun",
   secret: "thisshouldbeabettersecret",
   resave: false,
