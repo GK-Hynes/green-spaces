@@ -2,7 +2,7 @@
   "name": "green-spaces",
   "version": "1.0.0",
   "description": "A Node app for sharing information about green spaces.",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
